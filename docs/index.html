@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLM Lambda API 文档</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --bg-color: #f8fafc;
+            --code-bg: #1e293b;
+            --border-color: #e2e8f0;
+            --text-color: #334155;
+            --success-color: #22c55e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--bg-color);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin: 25px 0 15px 0;
+        }
+
+        h4 {
+            color: #475569;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        pre {
+            background: var(--code-bg);
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+
+        .inline-code {
+            background: #e2e8f0;
+            color: var(--secondary-color);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--bg-color);
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .response-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .response-box h4 {
+            color: var(--success-color);
+            margin-top: 0;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .warning-box {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .architecture-diagram {
+            text-align: center;
+            padding: 30px;
+            background: var(--bg-color);
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .flow-item {
+            display: inline-block;
+            padding: 15px 25px;
+            margin: 5px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .flow-arrow {
+            display: inline-block;
+            margin: 0 10px;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .client { background: #dbeafe; color: #1e40af; }
+        .lambda { background: #fef3c7; color: #92400e; }
+        .glm { background: #dcfce7; color: #166534; }
+        .dynamo { background: #f3e8ff; color: #7c3aed; }
+
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .comment {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .highlight {
+            background: #fef08a;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .flow-item {
+                display: block;
+                margin: 10px auto;
+                max-width: 200px;
+            }
+
+            .flow-arrow {
+                display: block;
+                transform: rotate(90deg);
+                margin: 10px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>GLM Lambda API</h1>
+        <p>基于 AWS Lambda 和智谱 GLM 的无服务器聊天 API</p>
+        <span class="badge">glm-4.7-flash | DynamoDB | Serverless</span>
+    </header>
+
+    <div class="container">
+        <!-- 项目概述 -->
+        <section>
+            <h2>项目概述</h2>
+            <p>本项目是一个基于 AWS Lambda 的无服务器聊天 API，集成了智谱 AI 的 GLM 大语言模型。支持多轮对话、会话管理和对话历史存储。</p>
+
+            <h3>架构图</h3>
+            <div class="architecture-diagram">
+                <span class="flow-item client">客户端</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-item lambda">AWS Lambda</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-item glm">GLM API</span>
+                <br><br>
+                <span class="flow-item lambda">AWS Lambda</span>
+                <span class="flow-arrow">↔</span>
+                <span class="flow-item dynamo">DynamoDB</span>
+            </div>
+
+            <h3>核心功能</h3>
+            <ul>
+                <li><strong>多轮对话</strong> - 自动维护对话上下文</li>
+                <li><strong>会话管理</strong> - 通过 session_id 区分不同用户/会话</li>
+                <li><strong>历史存储</strong> - 使用 DynamoDB 持久化对话记录</li>
+                <li><strong>自动过期</strong> - TTL 机制自动清理 7 天前的记录</li>
+            </ul>
+        </section>
+
+        <!-- 部署信息 -->
+        <section>
+            <h2>部署信息</h2>
+            <table>
+                <tr>
+                    <th>资源</th>
+                    <th>详情</th>
+                </tr>
+                <tr>
+                    <td>Lambda Function</td>
+                    <td><code class="inline-code">glm-chat</code></td>
+                </tr>
+                <tr>
+                    <td>DynamoDB Table</td>
+                    <td><code class="inline-code">glm-conversations</code></td>
+                </tr>
+                <tr>
+                    <td>Region</td>
+                    <td><code class="inline-code">us-east-1</code></td>
+                </tr>
+                <tr>
+                    <td>Model</td>
+                    <td><code class="inline-code">glm-4.7-flash</code></td>
+                </tr>
+                <tr>
+                    <td>Function URL</td>
+                    <td><code class="inline-code">https://kjkwvmbpiaxnzdnehfyjxcuela0twmre.lambda-url.us-east-1.on.aws/</code></td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- API 使用说明 -->
+        <section>
+            <h2>API 使用说明</h2>
+
+            <h3>请求格式</h3>
+            <pre><code>POST https://kjkwvmbpiaxnzdnehfyjxcuela0twmre.lambda-url.us-east-1.on.aws/
+Content-Type: application/json
+
+{
+    "message": "你的消息",
+    "session_id": "用户会话ID",
+    "model": "glm-4.7-flash",      // 可选，默认 glm-4.7-flash
+    "new_session": false           // 可选，设为 true 开启新会话
+}</code></pre>
+
+            <h3>请求参数</h3>
+            <table>
+                <tr>
+                    <th>参数</th>
+                    <th>类型</th>
+                    <th>必填</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td>message</td>
+                    <td>string</td>
+                    <td>是</td>
+                    <td>用户发送的消息内容</td>
+                </tr>
+                <tr>
+                    <td>session_id</td>
+                    <td>string</td>
+                    <td>否</td>
+                    <td>会话标识符，用于区分不同对话，默认 "default"</td>
+                </tr>
+                <tr>
+                    <td>model</td>
+                    <td>string</td>
+                    <td>否</td>
+                    <td>使用的模型，默认 "glm-4.7-flash"</td>
+                </tr>
+                <tr>
+                    <td>new_session</td>
+                    <td>boolean</td>
+                    <td>否</td>
+                    <td>是否开启新会话（忽略历史记录）</td>
+                </tr>
+            </table>
+
+            <h3>响应格式</h3>
+            <pre><code>{
+    "reply": "AI 的回复内容",
+    "session_id": "会话ID",
+    "model": "使用的模型",
+    "usage": {
+        "prompt_tokens": 17,
+        "completion_tokens": 634,
+        "total_tokens": 651
+    }
+}</code></pre>
+        </section>
+
+        <!-- 测试过程 -->
+        <section>
+            <h2>测试过程详解</h2>
+
+            <h3>测试 1：基础对话</h3>
+            <h4>请求</h4>
+            <pre><code>curl -X POST https://kjkwvmbpiaxnzdnehfyjxcuela0twmre.lambda-url.us-east-1.on.aws/ \
+  -H 'Content-Type: application/json' \
+  -d '{"message": "你好，介绍一下你自己", "session_id": "test123"}'</code></pre>
+
+            <div class="response-box">
+                <h4>响应结果</h4>
+                <pre><code>{
+    "reply": "你好！很高兴见到你。
+
+我是一个由Z.ai训练的大型语言模型，名叫GLM。我的设计初衷是利用人工智能技术，
+通过自然语言处理与你进行流畅的交互。
+
+我旨在成为一个既专业又友好的助手，能够协助你处理各种任务。具体来说，我可以：
+
+* 回答问题：无论是科学知识、历史事件还是生活常识。
+* 提供信息：总结文章、翻译语言或解释复杂的概念。
+* 协助创作：撰写邮件、诗歌、报告或进行头脑风暴。
+* 提供建议：在学习和工作方法上给你一些启发。
+
+我的目标是成为你学习、工作和生活中的得力助手。请问有什么我可以为你做的吗？",
+    "session_id": "test123",
+    "model": "glm-4.7-flash",
+    "usage": {
+        "completion_tokens": 634,
+        "prompt_tokens": 17,
+        "total_tokens": 651
+    }
+}</code></pre>
+            </div>
+
+            <h4>响应字段解析</h4>
+            <ul>
+                <li><strong>reply</strong> - GLM 模型生成的回复文本</li>
+                <li><strong>session_id</strong> - 返回的会话 ID，用于后续对话</li>
+                <li><strong>model</strong> - 实际使用的模型名称</li>
+                <li><strong>usage.prompt_tokens</strong> - 输入 token 数（包括系统提示和用户消息）</li>
+                <li><strong>usage.completion_tokens</strong> - 输出 token 数（AI 回复）</li>
+                <li><strong>usage.total_tokens</strong> - 总 token 消耗</li>
+            </ul>
+
+            <h3>测试 2：对话历史验证</h3>
+            <h4>请求</h4>
+            <pre><code>curl -X POST https://kjkwvmbpiaxnzdnehfyjxcuela0twmre.lambda-url.us-east-1.on.aws/ \
+  -H 'Content-Type: application/json' \
+  -d '{"message": "我刚才问了你什么问题？", "session_id": "test123"}'</code></pre>
+
+            <div class="response-box">
+                <h4>响应结果</h4>
+                <pre><code>{
+    "reply": "回顾我们刚才的对话，你只是向我问好，并让我介绍一下我自己。
+除此之外，你还没有提出其他具体的问题。
+
+你现在想问什么呢？或者有什么需要我协助的吗？",
+    "session_id": "test123",
+    "model": "glm-4.7-flash",
+    "usage": {
+        "completion_tokens": 535,
+        "prompt_tokens": 175,
+        "total_tokens": 710
+    }
+}</code></pre>
+            </div>
+
+            <div class="info-box">
+                <strong>关键观察：</strong>
+                <ul>
+                    <li>GLM 成功记住了之前的对话内容（"你只是向我问好，并让我介绍一下我自己"）</li>
+                    <li><code>prompt_tokens</code> 从 17 增加到 175，因为包含了历史对话</li>
+                    <li>这证明 DynamoDB 成功存储并检索了对话历史</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Lambda 代码解析 -->
+        <section>
+            <h2>Lambda 代码详解</h2>
+
+            <h3>完整代码</h3>
+            <pre><code>import json
+import urllib.request
+import os
+import boto3
+import time
+import uuid
+
+# 初始化 DynamoDB
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table(os.environ.get('DYNAMODB_TABLE', 'glm-conversations'))</code></pre>
+
+            <div class="info-box">
+                <strong>初始化部分：</strong>
+                <ul>
+                    <li><code>boto3</code> - AWS SDK，用于操作 DynamoDB</li>
+                    <li><code>urllib.request</code> - 原生 HTTP 库，无需额外依赖</li>
+                    <li>表名从环境变量读取，便于配置管理</li>
+                </ul>
+            </div>
+
+            <h3>获取对话历史</h3>
+            <pre><code>def get_conversation_history(session_id, limit=10):
+    """获取对话历史"""
+    try:
+        response = table.query(
+            KeyConditionExpression='session_id = :sid',
+            ExpressionAttributeValues={':sid': session_id},
+            ScanIndexForward=False,  # 按时间倒序
+            Limit=limit
+        )
+        items = response.get('Items', [])
+        items.reverse()  # 恢复正序
+
+        messages = []
+        for item in items:
+            messages.append({'role': 'user', 'content': item['user_message']})
+            messages.append({'role': 'assistant', 'content': item['assistant_message']})
+        return messages
+    except Exception as e:
+        print(f"Error getting history: {e}")
+        return []</code></pre>
+
+            <div class="info-box">
+                <strong>代码解析：</strong>
+                <ul>
+                    <li><code>ScanIndexForward=False</code> - 按时间戳倒序查询，获取最近的对话</li>
+                    <li><code>Limit=10</code> - 限制返回最近 10 轮对话，避免 token 超限</li>
+                    <li><code>items.reverse()</code> - 恢复时间正序，符合对话流程</li>
+                    <li>将每条记录转换为 <code>user</code> 和 <code>assistant</code> 消息对</li>
+                </ul>
+            </div>
+
+            <h3>保存对话记录</h3>
+            <pre><code>def save_conversation(session_id, user_message, assistant_message):
+    """保存对话记录"""
+    try:
+        table.put_item(Item={
+            'session_id': session_id,
+            'timestamp': int(time.time() * 1000),
+            'message_id': str(uuid.uuid4()),
+            'user_message': user_message,
+            'assistant_message': assistant_message,
+            'ttl': int(time.time()) + 86400 * 7  # 7天后自动删除
+        })
+    except Exception as e:
+        print(f"Error saving conversation: {e}")</code></pre>
+
+            <div class="info-box">
+                <strong>代码解析：</strong>
+                <ul>
+                    <li><code>session_id</code> - 分区键，用于区分不同会话</li>
+                    <li><code>timestamp</code> - 排序键，毫秒级时间戳</li>
+                    <li><code>message_id</code> - UUID，确保唯一性</li>
+                    <li><code>ttl</code> - 7 天后自动删除，节省存储成本</li>
+                </ul>
+            </div>
+
+            <h3>调用 GLM API</h3>
+            <pre><code>def call_glm_api(messages, model, api_key):
+    """调用 GLM API"""
+    url = os.environ.get('GLM_API_URL',
+        'https://api.z.ai/api/paas/v4/chat/completions')
+
+    payload = {
+        'model': model,
+        'messages': messages,
+        'max_tokens': 2048,
+        'temperature': 0.7
+    }
+
+    headers = {
+        'Authorization': f'Bearer {api_key}',
+        'Content-Type': 'application/json'
+    }
+
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode('utf-8'),
+        headers=headers,
+        method='POST'
+    )
+
+    with urllib.request.urlopen(req, timeout=60) as response:
+        return json.loads(response.read().decode('utf-8'))</code></pre>
+
+            <div class="info-box">
+                <strong>代码解析：</strong>
+                <ul>
+                    <li>使用 Z.AI 国际版 API（<code>api.z.ai</code>），避免国内访问限制</li>
+                    <li><code>max_tokens: 2048</code> - 限制回复长度</li>
+                    <li><code>temperature: 0.7</code> - 控制创造性，0.7 是平衡值</li>
+                    <li><code>timeout=60</code> - 60 秒超时，匹配 Lambda 配置</li>
+                </ul>
+            </div>
+
+            <h3>主处理函数</h3>
+            <pre><code>def lambda_handler(event, context):
+    """Lambda 入口函数"""
+
+    # 1. 获取 API Key
+    api_key = os.environ.get('ZHIPU_API_KEY')
+    if not api_key:
+        return {
+            'statusCode': 500,
+            'body': json.dumps({'error': 'ZHIPU_API_KEY not configured'})
+        }
+
+    # 2. 解析请求（支持 API Gateway 和直接调用）
+    if 'body' in event:
+        body = json.loads(event.get('body', '{}'))
+    else:
+        body = event
+
+    user_message = body.get('message', '你好')
+    default_model = os.environ.get('DEFAULT_MODEL', 'glm-4.7-flash')
+    model = body.get('model', default_model)
+    session_id = body.get('session_id', 'default')
+    new_session = body.get('new_session', False)
+
+    try:
+        # 3. 构建消息列表
+        messages = [{'role': 'system', 'content': '你是一个有帮助的AI助手。'}]
+
+        # 4. 获取历史对话（除非是新会话）
+        if not new_session:
+            history = get_conversation_history(session_id)
+            messages.extend(history)
+
+        # 5. 添加当前消息
+        messages.append({'role': 'user', 'content': user_message})
+
+        # 6. 调用 GLM API
+        result = call_glm_api(messages, model, api_key)
+        assistant_message = result['choices'][0]['message']['content']
+
+        # 7. 保存对话
+        save_conversation(session_id, user_message, assistant_message)
+
+        # 8. 返回响应
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'  # 支持跨域
+            },
+            'body': json.dumps({
+                'reply': assistant_message,
+                'session_id': session_id,
+                'model': model,
+                'usage': result.get('usage', {})
+            }, ensure_ascii=False)
+        }
+
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': json.dumps({'error': str(e)})
+        }</code></pre>
+
+            <div class="info-box">
+                <strong>处理流程：</strong>
+                <ol>
+                    <li>验证环境变量中的 API Key</li>
+                    <li>解析请求参数（兼容 API Gateway 和直接调用）</li>
+                    <li>构建 system prompt</li>
+                    <li>从 DynamoDB 加载对话历史</li>
+                    <li>添加用户当前消息</li>
+                    <li>调用 GLM API 获取回复</li>
+                    <li>保存本轮对话到 DynamoDB</li>
+                    <li>返回格式化响应</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- DynamoDB 数据结构 -->
+        <section>
+            <h2>DynamoDB 数据结构</h2>
+
+            <h3>表设计</h3>
+            <table>
+                <tr>
+                    <th>属性</th>
+                    <th>类型</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td>session_id (PK)</td>
+                    <td>String</td>
+                    <td>分区键，会话标识符</td>
+                </tr>
+                <tr>
+                    <td>timestamp (SK)</td>
+                    <td>Number</td>
+                    <td>排序键，毫秒级时间戳</td>
+                </tr>
+                <tr>
+                    <td>message_id</td>
+                    <td>String</td>
+                    <td>消息唯一 ID (UUID)</td>
+                </tr>
+                <tr>
+                    <td>user_message</td>
+                    <td>String</td>
+                    <td>用户消息内容</td>
+                </tr>
+                <tr>
+                    <td>assistant_message</td>
+                    <td>String</td>
+                    <td>AI 回复内容</td>
+                </tr>
+                <tr>
+                    <td>ttl</td>
+                    <td>Number</td>
+                    <td>过期时间戳（Unix 秒）</td>
+                </tr>
+            </table>
+
+            <h3>示例数据</h3>
+            <pre><code>{
+    "session_id": "test123",
+    "timestamp": 1737356158000,
+    "message_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "user_message": "你好，介绍一下你自己",
+    "assistant_message": "你好！很高兴见到你...",
+    "ttl": 1737960958
+}</code></pre>
+        </section>
+
+        <!-- 使用示例 -->
+        <section>
+            <h2>使用示例</h2>
+
+            <h3>基本对话</h3>
+            <pre><code>curl -X POST https://kjkwvmbpiaxnzdnehfyjxcuela0twmre.lambda-url.us-east-1.on.aws/ \
+  -H 'Content-Type: application/json' \
+  -d '{"message": "什么是机器学习？", "session_id": "user001"}'</code></pre>
+
+            <h3>继续对话</h3>
+            <pre><code>curl -X POST https://kjkwvmbpiaxnzdnehfyjxcuela0twmre.lambda-url.us-east-1.on.aws/ \
+  -H 'Content-Type: application/json' \
+  -d '{"message": "能举个例子吗？", "session_id": "user001"}'</code></pre>
+
+            <h3>开启新会话</h3>
+            <pre><code>curl -X POST https://kjkwvmbpiaxnzdnehfyjxcuela0twmre.lambda-url.us-east-1.on.aws/ \
+  -H 'Content-Type: application/json' \
+  -d '{"message": "你好", "session_id": "user001", "new_session": true}'</code></pre>
+
+            <h3>指定模型</h3>
+            <pre><code>curl -X POST https://kjkwvmbpiaxnzdnehfyjxcuela0twmre.lambda-url.us-east-1.on.aws/ \
+  -H 'Content-Type: application/json' \
+  -d '{"message": "写一首诗", "model": "glm-4.7"}'</code></pre>
+        </section>
+
+        <!-- 可用模型 -->
+        <section>
+            <h2>可用模型</h2>
+            <table>
+                <tr>
+                    <th>模型 ID</th>
+                    <th>说明</th>
+                    <th>适用场景</th>
+                </tr>
+                <tr>
+                    <td>glm-4.7-flash</td>
+                    <td>轻量高效，免费版</td>
+                    <td>日常对话、快速响应</td>
+                </tr>
+                <tr>
+                    <td>glm-4.7</td>
+                    <td>最新旗舰模型</td>
+                    <td>复杂推理、代码生成</td>
+                </tr>
+                <tr>
+                    <td>glm-4.6</td>
+                    <td>200K 上下文</td>
+                    <td>长文档处理</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- 错误处理 -->
+        <section>
+            <h2>错误处理</h2>
+
+            <h3>常见错误码</h3>
+            <table>
+                <tr>
+                    <th>状态码</th>
+                    <th>错误类型</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td>500</td>
+                    <td>ZHIPU_API_KEY not configured</td>
+                    <td>Lambda 环境变量未配置</td>
+                </tr>
+                <tr>
+                    <td>401</td>
+                    <td>Authentication failed</td>
+                    <td>API Key 无效</td>
+                </tr>
+                <tr>
+                    <td>1211</td>
+                    <td>Unknown Model</td>
+                    <td>模型名称错误</td>
+                </tr>
+            </table>
+
+            <div class="warning-box">
+                <strong>注意：</strong> 国内版 API（open.bigmodel.cn）和国际版 API（api.z.ai）的模型名称不同。本项目使用国际版，模型名为 <code>glm-4.7-flash</code> 而非 <code>glm-4-flash</code>。
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>Built with AWS Lambda + DynamoDB + GLM API</p>
+        <p>Documentation generated by Claude Code</p>
+    </footer>
+</body>
+</html>
