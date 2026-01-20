@@ -61,6 +61,23 @@
             font-size: 0.9rem;
         }
 
+        .chat-btn {
+            display: inline-block;
+            background: white;
+            color: var(--primary-color);
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .chat-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
         section {
             background: white;
             border-radius: 12px;
@@ -242,6 +259,8 @@
         <h1>GLM Lambda API</h1>
         <p>基于 AWS Lambda 和智谱 GLM 的无服务器聊天 API</p>
         <span class="badge">glm-4.7-flash | DynamoDB | Serverless</span>
+        <br>
+        <a href="chat.html" class="chat-btn">打开聊天界面</a>
     </header>
 
     <div class="container">
