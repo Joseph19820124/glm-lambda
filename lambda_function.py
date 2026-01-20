@@ -67,7 +67,7 @@ def call_glm_api(messages, model, api_key):
         method='POST'
     )
 
-    with urllib.request.urlopen(req, timeout=60) as response:
+    with urllib.request.urlopen(req, timeout=240) as response:
         return json.loads(response.read().decode('utf-8'))
 
 def lambda_handler(event, context):
